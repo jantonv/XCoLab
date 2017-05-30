@@ -102,7 +102,7 @@ public class ContestClient {
     public Contest getContest(long contestId) {
         try {
             return contestResource.get(contestId)
-                    //.withCache(CacheName.CONTEST_DETAILS)
+                    .withCache(CacheName.CONTEST_DETAILS)
                     .executeChecked().toPojo(contestService);
         } catch (EntityNotFoundException e) {
             throw new ContestNotFoundException(contestId);
@@ -216,7 +216,7 @@ public class ContestClient {
         List<ContestDto> list = contestResource.list()
                 .queryParam("contestUrlName", contestUrlName)
                 .queryParam("contestYear", contestYear)
-//                .withCache(CacheName.CONTEST_DETAILS)
+                .withCache(CacheName.CONTEST_DETAILS)
                 .execute();
         if (list != null && !list.isEmpty()) {
             return list.get(0).toPojo(contestService);
@@ -237,14 +237,14 @@ public class ContestClient {
         return DtoUtil.toPojos(contestResource.list()
                 .optionalQueryParam("active", active)
                 .optionalQueryParam("featured", featured)
-//                .withCache(CacheName.CONTEST_LIST)
+                .withCache(CacheName.CONTEST_LIST)
                 .execute(), contestService);
     }
 
     public List<Contest> findContestsByActive(boolean active) {
         return DtoUtil.toPojos(contestResource.list()
                 .optionalQueryParam("active", active)
-//                .withCache(CacheName.CONTEST_LIST)
+                .withCache(CacheName.CONTEST_LIST)
                 .execute(), contestService);
     }
 
@@ -257,7 +257,7 @@ public class ContestClient {
                 .optionalQueryParam("contestTypeIds",  contestTypeIds)
                 .optionalQueryParam("contestTiers",  contestTiers)
                 .queryParam("contestPrivate", false)
-//                .withCache(CacheName.CONTEST_LIST)
+                .withCache(CacheName.CONTEST_LIST)
                 .execute(), contestService);
     }
 
@@ -266,7 +266,7 @@ public class ContestClient {
         return DtoUtil.toPojos(contestResource.list()
                 .queryParam("contestTiers", contestTier)
                 .queryParam("focusAreaIds", focusAreaOntologyTerms.toArray())
-//                .withCache(CacheName.CONTEST_LIST)
+                .withCache(CacheName.CONTEST_LIST)
                 .execute(), contestService);
     }
 
@@ -630,7 +630,7 @@ public class ContestClient {
     public List<Contest> getContestsByContestType(Long contestTypeId) {
         return DtoUtil.toPojos(contestResource.list()
                 .queryParam("contestTypeIds", contestTypeId)
-//                .withCache(CacheName.CONTEST_LIST)
+                .withCache(CacheName.CONTEST_LIST)
                 .execute(), contestService);
     }
 
