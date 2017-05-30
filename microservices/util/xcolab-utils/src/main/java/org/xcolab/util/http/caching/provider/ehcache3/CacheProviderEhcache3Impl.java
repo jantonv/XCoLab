@@ -20,7 +20,7 @@ import org.xcolab.util.http.caching.CacheCustomization.DiskStorage;
 import org.xcolab.util.http.caching.CacheDuration;
 import org.xcolab.util.http.caching.CacheKey;
 import org.xcolab.util.http.caching.CacheName;
-import org.xcolab.util.http.caching.provider.CacheProvider;
+import org.xcolab.util.http.caching.provider.AbstractCacheProvider;
 import org.xcolab.util.http.caching.provider.ehcache3.statistics.CacheStatisticProvider;
 import org.xcolab.util.http.caching.provider.ehcache3.statistics.CacheStatisticProvider.CacheEvent;
 
@@ -29,7 +29,8 @@ import java.util.Map;
 import static org.ehcache.config.builders.CacheConfigurationBuilder.newCacheConfigurationBuilder;
 import static org.ehcache.config.builders.CacheManagerBuilder.newCacheManagerBuilder;
 
-public class CacheProviderEhcache3Impl implements CacheProvider, DisposableBean {
+public class CacheProviderEhcache3Impl extends AbstractCacheProvider
+        implements DisposableBean {
 
     private static final Logger log = LoggerFactory.getLogger(CacheProviderEhcache3Impl.class);
 

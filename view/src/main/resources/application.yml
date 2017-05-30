@@ -25,6 +25,10 @@ cache:
   disk-storage:
     enabled: true
     max-megabytes: 1000
+  validation:
+    enabled: true
+    validators:
+      - org.xcolab.view.caching.ContestCacheValidator
 
 spring:
   mvc:

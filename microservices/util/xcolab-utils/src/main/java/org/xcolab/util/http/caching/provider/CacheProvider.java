@@ -28,4 +28,5 @@ public interface CacheProvider {
     }
 
     void clear(CacheName cacheName);
+
 }
