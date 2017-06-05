@@ -186,10 +186,10 @@
 									<!--<collab:contestLink contest="${contestWrapper}" />-->
 								</td>
 								<td >${contestWrapper.activePhase.name}</td>
-								<td><form:checkbox path="contestWrappers[${x.index}].contestActive" disabled="false" onclick="processCheckBox()"/></td>
-								<td><form:checkbox path="contestWrappers[${x.index}].contestPrivate" disabled="false"  onclick="processCheckBox()"/></td>
-								<td><form:checkbox path="contestWrappers[${x.index}].featured_" disabled="false"  onclick="processCheckBox()"/></td>
-								<td><form:checkbox path="subscribedToContest[${x.index}]" disabled="false"  onclick="processCheckBox()"/></td>
+								<td><form:checkbox path="contestWrappers[${x.index}].contestActive" disabled="false" onclick="processCheckBox(this)"/></td>
+								<td><form:checkbox path="contestWrappers[${x.index}].contestPrivate" disabled="false"  onclick="processCheckBox(this)"/></td>
+								<td><form:checkbox path="contestWrappers[${x.index}].featured_" disabled="false"  onclick="processCheckBox(this)"/></td>
+								<td><form:checkbox path="subscribedToContest[${x.index}]" disabled="false"  onclick="processCheckBox(this)"/></td>
 								<td>${fn:length(contestWrapper.contestJudges)} </td>
 								<td>${fn:length(contestWrapper.contestAdvisors)} </td>
 								<td>${fn:length(contestWrapper.contestFellows)} </td>
@@ -227,11 +227,31 @@
 			bindDragDropEvents();
 		});
 
-        function processCheckBox()
+        function processCheckBox(selectedCheckbox)
         {
+            var checkBoxID = selectedCheckbox.id;
+            if(checkBoxID.startsWith("subscribedToContest"))
+            {
+                if(selectedCheckbox.checked == false)
+                    selectElement("-11");
+                else
+                    selectElement("11");
+                var matches = checkBoxID.match(/\d+$/);
+                if (matches) {
+                    numbere = matches[0];
+                }
+                var nameOfFirst  = "selectedContest".concat(numbere);
+                document.getElementById(nameOfFirst).checked = true;
+            }
+
             document.getElementById("editForm").submit();
         }
 
+        function selectElement(valueToSelect)
+        {
+            var element = document.getElementById('selectedMassAction');
+            element.value = valueToSelect;
+        }
 
 		function bindMassActionChange(){
 
