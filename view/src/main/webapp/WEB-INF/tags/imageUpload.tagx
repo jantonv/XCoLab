@@ -58,6 +58,9 @@
     <div class="c-Upload ${compactView ? 'c-Upload--compact' : ''}">
         <img id="${previewImgId}"
              src="/image?img_id=${defaultImageId}&amp;defaultImage=${defaultImage}" />
+
+        <a><span class="remove glyphicon glyphicon-remove-sign" /></a>
+
         <div class="c-Upload__button">
             <span class="c-Button__primary fileinput-button">
                 ${buttonText}
