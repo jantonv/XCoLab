@@ -68,11 +68,13 @@
             </span>
         </div>
 
-        <div class="c-Remove__button">
-            <span class="c-Button__primary fileinput-button">
-                Remove Picture
-            </span>
-        </div>
+        <c:if test="${not empty defaultImageId}">
+            <div class="c-Remove__button">
+                <span class="c-Button__primary fileinput-button" href="#" onclick="deleteImageUpload()">
+                    Remove Picture
+                </span>
+            </div>
+        </c:if>
 
         <div style="${shouldDisplayUrl ? '' : 'display: none'}">
             Link to your image: <a id="${urlDisplayDiv}" href=""><!-- --></a>
@@ -120,6 +122,12 @@
     </c:if>
 
     <script>
+        function deleteImageUpload() {
+            if (confirm("Are you sure you want to delete this picture?")) {
+                alert("Will delete it now...");
+            }
+        }
+
         jQuery(function() {
             var vars = fileUploadVars['${uniqueName}'];
             jQuery(vars.fileUploadInputId).fileupload({
