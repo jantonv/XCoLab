@@ -59,12 +59,18 @@
         <img id="${previewImgId}"
              src="/image?img_id=${defaultImageId}&amp;defaultImage=${defaultImage}" />
 
-        <a><span class="remove glyphicon glyphicon-remove-sign" /></a>
+        <!--<a><span class="remove glyphicon glyphicon-remove-sign" /></a>-->
 
         <div class="c-Upload__button">
             <span class="c-Button__primary fileinput-button">
                 ${buttonText}
                 <input id="${uploadImageInputId}" type="file" name="file" tabindex="-1" />
+            </span>
+        </div>
+
+        <div class="c-Remove__button">
+            <span class="c-Button__primary fileinput-button">
+                Remove Picture
             </span>
         </div>
 
