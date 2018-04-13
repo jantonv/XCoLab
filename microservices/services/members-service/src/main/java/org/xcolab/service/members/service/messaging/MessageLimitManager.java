@@ -3,7 +3,9 @@ package org.xcolab.service.members.service.messaging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.xcolab.model.tables.pojos.Member;
 import org.xcolab.model.tables.pojos.MessagingUserPreferences;
+import org.xcolab.service.members.domain.member.MemberDao;
 import org.xcolab.service.members.domain.messaging.MessageDao;
 import org.xcolab.service.members.service.role.RoleService;
 
@@ -11,6 +13,7 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,18 +27,22 @@ import java.util.Map;
 public class MessageLimitManager {
 
     private static final Map<Long, Object> mutexes = new HashMap<>();
-	private static final int MESSAGES_DAILY_LIMIT = 15;
+    private static final int MESSAGES_DAILY_LIMIT = 15;
+    private static final int MESSAGES_DAILY_LIMIT_FIRST_DAY = 2;
+    private static final int MESSAGES_DAILY_LIMIT_FIRST_WEEK = 5;
 	private static final Map<Long, LocalDateTime> lastValidationDateMap = new HashMap<>();
 
     private final MessagingUserPreferencesService messagingUserPreferencesService;
     private final MessageDao messageDao;
+    private final MemberDao memberDao;
     private final RoleService roleService;
 
     @Autowired
     private MessageLimitManager(MessagingUserPreferencesService messagingUserPreferencesService,
-            MessageDao messageDao, RoleService roleService) {
+            MessageDao messageDao, MemberDao memberDao, RoleService roleService) {
         this.messagingUserPreferencesService = messagingUserPreferencesService;
         this.messageDao = messageDao;
+        this.memberDao = memberDao;
         this.roleService = roleService;
     }
 
@@ -80,9 +87,24 @@ public class MessageLimitManager {
         if (messagingPreferences.getDailyMessageLimit() != null) {
             messagesLimit = messagingPreferences.getDailyMessageLimit();
         } else {
-            messagesLimit = MESSAGES_DAILY_LIMIT;
+            final Member member = memberDao.getMember(memberId)
+                    .orElseThrow(() -> new IllegalStateException("Can't check limit for member "
+                            + memberId + ": member does not exist"));
+
+            if (isMoreThanXDaysOld(member, 7)) {
+                messagesLimit = MESSAGES_DAILY_LIMIT;
+            } else if (isMoreThanXDaysOld(member, 1)) {
+                messagesLimit = MESSAGES_DAILY_LIMIT_FIRST_WEEK;
+            } else {
+                messagesLimit = MESSAGES_DAILY_LIMIT_FIRST_DAY;;
+            }
         }
         return messagesLimit;
+    }
+
+    private boolean isMoreThanXDaysOld(Member member, int days) {
+        return member.getCreateDate().toInstant()
+                .plus(days, ChronoUnit.DAYS).isBefore(Instant.now());
     }
 
     public synchronized Object getMutex(long senderId) {
