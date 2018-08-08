@@ -32,12 +32,20 @@ public class ValidatedCacheProvider implements CacheProvider {
      * @param cacheValidator Cache validator to register.
      */
     public void registerCacheValidator(CacheValidator cacheValidator) {
+        log.trace("Registering validator {} of type {}", cacheValidator.getClass().getSimpleName(),
+                cacheValidator.getEntityType());
         cacheValidators.put(cacheValidator.getEntityType(), cacheValidator);
     }
 
     private <T> boolean isValid(T entity) {
         //noinspection unchecked
         CacheValidator<T> cacheValidator = cacheValidators.get(entity.getClass());
+        if (cacheValidator != null) {
+            log.trace("Validating entity of type {} with validator {}", entity.getClass(),
+                    cacheValidator.getClass().getSimpleName());
+        } else {
+            log.trace("No validator found for type {}", entity.getClass());
+        }
         return cacheValidator == null || cacheValidator.isValid(entity);
     }
 

@@ -86,6 +86,7 @@ public class CacheConfig {
             cacheProvider = new CacheProviderNoOpImpl();
         }
 
+        log.info("Cache provider configured: {}", cacheProvider);
         ServiceRequestUtils.setCacheProvider(cacheProvider);
         return cacheProvider;
     }
