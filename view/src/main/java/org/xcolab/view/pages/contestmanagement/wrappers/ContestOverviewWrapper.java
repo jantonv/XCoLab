@@ -1,5 +1,8 @@
 package org.xcolab.view.pages.contestmanagement.wrappers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.xcolab.client.contest.ContestClientUtil;
 import org.xcolab.client.contest.pojo.AbstractContest;
 import org.xcolab.client.contest.pojo.Contest;
@@ -20,6 +23,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class ContestOverviewWrapper implements MassActionDataWrapper {
+
+    private static final Logger log = LoggerFactory.getLogger(ContestOverviewWrapper.class);
 
     private final Map<Long, Contest> contests = new LinkedHashMap<>();
     private final Map<Long, Boolean> selectedContests = new HashMap<>();
@@ -44,6 +49,13 @@ public class ContestOverviewWrapper implements MassActionDataWrapper {
 
     private void populateContestsAndSelectedList() {
         List<Contest> allContests = ContestClientUtil.getAllContests();
+
+        for (Contest contest : allContests) {
+            if (contest.getWeight() == null) {
+                log.error("This contest's weight is null: {}", contest);
+            }
+        }
+
         // LinkedHashMap will maintain insertion order
         allContests.sort(Comparator.comparing(AbstractContest::getWeight));
         for (Contest contest : allContests) {
