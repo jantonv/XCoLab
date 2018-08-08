@@ -9,6 +9,7 @@ import org.xcolab.util.http.caching.CacheKey;
 import org.xcolab.util.http.caching.CacheName;
 import org.xcolab.util.http.caching.validation.CacheValidator;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,14 +38,27 @@ public class ValidatedCacheProvider implements CacheProvider {
         cacheValidators.put(cacheValidator.getEntityType(), cacheValidator);
     }
 
-    private <T> boolean isValid(T entity) {
+    private boolean isValid(Object entity) {
         //noinspection unchecked
-        CacheValidator<T> cacheValidator = cacheValidators.get(entity.getClass());
+        Class<?> entityType = entity.getClass();
+        if (entity instanceof Collection) {
+            Collection collection = (Collection) entity;
+            if (collection.isEmpty()) {
+                log.trace("Found empty collection - skipping validation");
+            } else {
+                final Object collectionEntity = collection.iterator().next();
+                log.trace("Found collection of type {} containing elements of type {}",
+                        entity.getClass(), collection.getClass());
+                entityType = collectionEntity.getClass();
+            }
+        }
+        //noinspection unchecked
+        CacheValidator<? super Object> cacheValidator = cacheValidators.get(entityType);
         if (cacheValidator != null) {
-            log.trace("Validating entity of type {} with validator {}", entity.getClass(),
+            log.trace("Validating entity of type {} with validator {}", entityType,
                     cacheValidator.getClass().getSimpleName());
         } else {
-            log.trace("No validator found for type {}", entity.getClass());
+            log.trace("No validator found for type {}", entityType);
         }
         return cacheValidator == null || cacheValidator.isValid(entity);
     }
