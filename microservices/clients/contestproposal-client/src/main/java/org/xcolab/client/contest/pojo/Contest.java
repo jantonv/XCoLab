@@ -674,19 +674,6 @@ public class Contest extends AbstractContest implements Serializable {
 //        }
         return true;
     }
-    public void setUpForeignContestVisualConfigsFromLocal(Contest c) {
-        this.setFeatured(c.getFeatured());
-        this.setContestActive(c.getContestActive());
-        this.setContestPrivate(c.getContestPrivate());
-        this.setFlag(c.getFlag());
-        this.setFlagText(c.getFlagText());
-        this.setFlagTooltip(c.getFlagText());
-        this.setFeatured(c.getFeatured());
-        this.setShowInListView(c.getShowInListView());
-        this.setShowInOutlineView(c.getShowInOutlineView());
-        this.setShowInTileView(c.getShowInTileView());
-        this.setWeight(c.getWeight());
-    }
 
     public String getNewProposalLinkUrl() {
         final String portletUrl = getContestType().getContestBaseUrl();
