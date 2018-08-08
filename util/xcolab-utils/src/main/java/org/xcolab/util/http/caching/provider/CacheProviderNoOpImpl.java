@@ -7,7 +7,7 @@ import org.xcolab.util.http.caching.CacheName;
 
 import java.util.Map;
 
-public class CacheProviderNoOpImpl extends AbstractCacheProvider {
+public class CacheProviderNoOpImpl implements CacheProvider {
 
     @Override
     public void init(Map<CacheName, CacheCustomization> customizations, DiskStorage diskStorage) {

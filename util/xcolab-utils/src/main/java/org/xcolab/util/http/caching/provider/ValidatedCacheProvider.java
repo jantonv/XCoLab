@@ -12,7 +12,7 @@ import org.xcolab.util.http.caching.validation.CacheValidator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValidatedCacheProvider extends AbstractCacheProvider {
+public class ValidatedCacheProvider implements CacheProvider {
 
     private static final Logger log = LoggerFactory.getLogger(ValidatedCacheProvider.class);
 

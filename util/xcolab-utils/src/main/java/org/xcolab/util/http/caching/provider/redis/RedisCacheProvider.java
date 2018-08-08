@@ -8,12 +8,12 @@ import org.xcolab.util.http.caching.CacheCustomization;
 import org.xcolab.util.http.caching.CacheCustomization.DiskStorage;
 import org.xcolab.util.http.caching.CacheKey;
 import org.xcolab.util.http.caching.CacheName;
-import org.xcolab.util.http.caching.provider.AbstractCacheProvider;
+import org.xcolab.util.http.caching.provider.CacheProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RedisCacheProvider extends AbstractCacheProvider {
+public class RedisCacheProvider implements CacheProvider {
 
     private final RedisCacheManager redisCacheManager;
 

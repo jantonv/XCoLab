@@ -7,7 +7,7 @@ import org.xcolab.util.http.caching.CacheName;
 
 import java.util.Map;
 
-public class TieredCacheProvider extends AbstractCacheProvider {
+public class TieredCacheProvider implements CacheProvider {
 
     private final ConditionalCacheProvider tier1;
     private final CacheProvider tier2;

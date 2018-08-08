@@ -20,12 +20,12 @@ import org.xcolab.util.http.caching.CacheCustomization.DiskStorage;
 import org.xcolab.util.http.caching.CacheDuration;
 import org.xcolab.util.http.caching.CacheKey;
 import org.xcolab.util.http.caching.CacheName;
-import org.xcolab.util.http.caching.provider.AbstractCacheProvider;
+import org.xcolab.util.http.caching.provider.CacheProvider;
 import org.xcolab.util.metrics.MetricsUtil;
 
 import java.util.Map;
 
-public class Ehcache2CacheProvider extends AbstractCacheProvider {
+public class Ehcache2CacheProvider implements CacheProvider {
 
     private static final Logger log = LoggerFactory.getLogger(Ehcache2CacheProvider.class);
 
