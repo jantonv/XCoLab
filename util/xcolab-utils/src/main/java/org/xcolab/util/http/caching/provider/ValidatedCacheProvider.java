@@ -13,6 +13,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Decorator that can validate entities that enter or leave the decorated {@link CacheProvider}.
+ *
+ * This can be helpful for debugging purposes if problems are found with entities in the cache,
+ * as it will be sure to fail fast when invalid entities are added to or retrieved from the cache.
+ *
+ * This class decorates another {@code CacheProvider} and uses a list of {@link CacheValidator}s to
+ * validate them. All methods function the same as the decorated {@code CacheProvider}, with the
+ * difference that the {@link #add(CacheKey, CacheName, Object)}, {@link #get(CacheKey, CacheName)},
+ * {@link #replace(CacheKey, CacheName, Object)} methods throw an {@link InvalidCacheEntryException}
+ * if an invalid element is found.
+ */
 public class ValidatedCacheProvider implements CacheProvider {
 
     private static final Logger log = LoggerFactory.getLogger(ValidatedCacheProvider.class);
@@ -44,19 +56,15 @@ public class ValidatedCacheProvider implements CacheProvider {
         if (entity instanceof Collection) {
             Collection collection = (Collection) entity;
             if (collection.isEmpty()) {
-                log.trace("Found empty collection - skipping validation");
                 return true;
             } else {
                 final Object collectionEntity = collection.iterator().next();
-                log.trace("Found collection of type {} containing elements of type {}",
-                        entity.getClass(), collectionEntity.getClass());
                 entityType = collectionEntity.getClass();
             }
         }
         //noinspection unchecked
         CacheValidator<? super Object> cacheValidator = cacheValidators.get(entityType);
         if (cacheValidator == null) {
-            log.trace("No validator found for type {}", entityType);
             return true;
         }
 
@@ -82,8 +90,7 @@ public class ValidatedCacheProvider implements CacheProvider {
         T ret = cacheProvider.get(key, cacheName);
         if (ret != null && !isValid(ret)) {
             delete(key, cacheName);
-            log.error("Retrieved invalid entry from cache {} with key {}: {}", cacheName, key, ret);
-            return null;
+            throw new InvalidCacheEntryException(cacheName, key, ret);
         }
         return ret;
     }
@@ -127,6 +134,10 @@ public class ValidatedCacheProvider implements CacheProvider {
     public static class InvalidCacheEntryException extends IllegalStateException {
         public InvalidCacheEntryException(Object invalidEntry) {
             super("Invalid cache entry found: " + invalidEntry);
+        }
+        public InvalidCacheEntryException(CacheName cacheName, Object key, Object invalidEntry) {
+            super(String.format("Invalid cache entry %s with key %s found in cache %s: ",
+                    invalidEntry, key, cacheName.toString()));
         }
     }
 }
