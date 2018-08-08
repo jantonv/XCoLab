@@ -45,6 +45,7 @@ public class ValidatedCacheProvider implements CacheProvider {
             Collection collection = (Collection) entity;
             if (collection.isEmpty()) {
                 log.trace("Found empty collection - skipping validation");
+                return true;
             } else {
                 final Object collectionEntity = collection.iterator().next();
                 log.trace("Found collection of type {} containing elements of type {}",
@@ -54,13 +55,21 @@ public class ValidatedCacheProvider implements CacheProvider {
         }
         //noinspection unchecked
         CacheValidator<? super Object> cacheValidator = cacheValidators.get(entityType);
-        if (cacheValidator != null) {
-            log.trace("Validating entity of type {} with validator {}", entityType,
-                    cacheValidator.getClass().getSimpleName());
-        } else {
+        if (cacheValidator == null) {
             log.trace("No validator found for type {}", entityType);
+            return true;
         }
-        return cacheValidator == null || cacheValidator.isValid(entity);
+
+        log.trace("Validating entity of type {} with validator {}", entityType,
+                cacheValidator.getClass().getSimpleName());
+
+        if (entity instanceof Collection) {
+            //noinspection unchecked
+            Collection<Object> collection = (Collection<Object>) entity;
+            return collection.stream().allMatch(cacheValidator::isValid);
+        } else {
+            return cacheValidator.isValid(entity);
+        }
     }
 
     @Override
