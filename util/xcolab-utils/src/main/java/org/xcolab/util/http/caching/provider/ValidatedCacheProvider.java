@@ -49,7 +49,7 @@ public class ValidatedCacheProvider implements CacheProvider {
             } else {
                 final Object collectionEntity = collection.iterator().next();
                 log.trace("Found collection of type {} containing elements of type {}",
-                        entity.getClass(), collection.getClass());
+                        entity.getClass(), collectionEntity.getClass());
                 entityType = collectionEntity.getClass();
             }
         }
